@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.compress.archivers.dump.InvalidFormatException;
@@ -17,16 +20,20 @@ import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
 public class FindFile {
 	
-	public static void findFile(File directory) {
-		File[] list = directory.listFiles();
+	public static void findFile(String directoryInput) {
 		
-		if(list != null) {
-			for (File file : list) {
-				if (file.isDirectory()) {
-					System.out.println(file.getParentFile());
-				}
+		File directory = new File(directoryInput);
+		File[] fileList = directory.listFiles();
+		
+		for (int i = 0; i < fileList.length; i++) {
+			if (fileList[i].isFile()) {
+				System.out.println("File" + fileList[i].getName());
 			}
-		}
+			else if (fileList[i].isDirectory()) {
+				System.out.println("Directory" + fileList[i].getName());
+			}
+		} 
+		
 	}
 	
 	public static void find_Replace_DocX(String path, String replacement) throws IOException, InvalidFormatException {
