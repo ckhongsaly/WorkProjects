@@ -2,6 +2,7 @@ package main.java.SearchDocX;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -10,6 +11,9 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
 public class FindFile {
 	
@@ -32,14 +36,16 @@ public class FindFile {
 			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
 			
 			//Find and replace in paragraph
-			
 			List<XWPFParagraph> paragraphList = document.getParagraphs();
 			
 			for (XWPFParagraph paragraph : paragraphList) {
 				List<XWPFRun> runs = paragraph.getRuns();
+				
 				if(runs != null) {
+					
 					for (XWPFRun r: runs) {
 						String text = r.getText(0);
+						
 						if (text != null && text.contains(replacement)) {
 							text = text.replace(replacement, ""); //remove text
 							r.setText(text,0);
@@ -48,8 +54,38 @@ public class FindFile {
 				}
 			}
 			
+			//Find and replace in tables
+			List<XWPFTable> tableList = document.getTables();
 			
+			for (XWPFTable table : tableList) {
+				List<XWPFTableRow> rowList = table.getRows();
+				
+				for (XWPFTableRow row: rowList) {
+					List<XWPFTableCell> cellList = row.getTableCells();
+					
+					for(XWPFTableCell cell : cellList) {
+						paragraphList = cell.getParagraphs();
+						
+						for(XWPFParagraph paragraph: paragraphList) {
+							List<XWPFRun> runs = paragraph.getRuns();
+							
+							if(runs != null) {
+								
+								for (XWPFRun r: runs) {
+									String text = r.getText(0);
+									
+									if (text != null && text.contains(replacement)) {
+										text = text.replace(replacement, ""); //remove text
+										r.setText(text,0);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 			
+			document.write(new FileOutputStream("C:\\\\Users\\\\eoi61\\\\Dropbox\\\\Project_Workplace\\\\WorkProjects\\\\Files"));
 			
 			//close FileInputSTream, XWPFDocument
 			fis.close();
@@ -57,7 +93,7 @@ public class FindFile {
 			} 
 		catch (Exception ex) {
 				ex.printStackTrace();
-			}
+		}
 	}
 	
 }//end of FindFile
