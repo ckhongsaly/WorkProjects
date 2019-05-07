@@ -15,7 +15,6 @@ public class ReadDocX {
 
 	public static void readDocXFile(String path) {
 		
-		
 		try {
 			
 			File file = new File(path);
@@ -28,7 +27,7 @@ public class ReadDocX {
 			
 			System.out.println(extractor.getText());
 			
-			//close FileInputSTream and XWPFDocument
+			//close FileInputSTream, XWPFDocument, and WordExtractor
 			fis.close();
 			document.close();
 			extractor.close();
