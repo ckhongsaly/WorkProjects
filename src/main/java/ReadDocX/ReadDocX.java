@@ -13,7 +13,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 public class ReadDocX {
 
-	public void readDocXFile(String path) {
+	public static void readDocXFile(String path) {
 		
 		
 		try {
