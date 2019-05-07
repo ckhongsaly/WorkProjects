@@ -1,6 +1,6 @@
- plugins {
-  id "com.github.spotbugs" version "1.6.11"
- }
+// plugins {
+//  id "com.github.spotbugs" version "1.6.11"
+// }
 
 apply plugin: 'java'
 apply plugin: 'application'
@@ -78,14 +78,14 @@ jacocoTestReport {
 // Configure SpotBugs
 ///////////////////////////////////////////////////////////////////////////
 
- spotbugs {
-   toolVersion = '3.1.12'
- }
+// spotbugs {
+//   toolVersion = '3.1.12'
+// }
 
  // To generate an HTML report instead of XML
- tasks.withType(com.github.spotbugs.SpotBugsTask) {
-   reports {
-     xml.enabled = false
-     html.enabled = true
-   }
- }
+// tasks.withType(com.github.spotbugs.SpotBugsTask) {
+//   reports {
+//     xml.enabled = false
+//     html.enabled = true
+//   }
+// }
