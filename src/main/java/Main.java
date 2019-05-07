@@ -11,6 +11,7 @@ public class Main {
 		System.out.println("Class ReadDocX, Reading " + PATH);
 		System.out.println("--------------------------------------");
 		ReadDocX.readDocXFile(PATH);
+		
 	}
 	
 }
