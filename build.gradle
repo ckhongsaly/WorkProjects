@@ -1,0 +1,81 @@
+ plugins {
+   id "com.github.spotbugs" version "1.6.11"
+ }
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'jacoco'
+
+
+mainClassName = 'main.java.Main'
+
+jacoco {
+    toolVersion = "0.8.3"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    jcenter()
+	mavenCentral()
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+	compile "junit:junit:4.12" 
+}
+
+test{
+	filter{
+	//specific test class 
+	includeTestsMatching "FactoryPatternTest"
+	includeTestsMatching "DecoratorPatternTest"
+	includeTestsMatching "MediatorPatternTest"
+	}
+}
+
+// Will generate jacocoTestReport
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Configure Checkstyle
+///////////////////////////////////////////////////////////////////////////
+ apply plugin: 'checkstyle'
+ checkstyle {
+   // Keep checkstyle a little quieter
+   ignoreFailures = true
+   showViolations = false
+ }
+
+ tasks.withType(Checkstyle) {
+   reports {
+     html.enabled = true
+     xml.enabled = false
+   }
+ }
+ checkstyle {
+     toolVersion = "8.8"
+ }
+
+
+///////////////////////////////////////////////////////////////////////////
+// Configure SpotBugs
+///////////////////////////////////////////////////////////////////////////
+
+ spotbugs {
+   toolVersion = '3.1.12'
+ }
+
+ // To generate an HTML report instead of XML
+ tasks.withType(com.github.spotbugs.SpotBugsTask) {
+   reports {
+     xml.enabled = false
+     html.enabled = true
+   }
+ }
