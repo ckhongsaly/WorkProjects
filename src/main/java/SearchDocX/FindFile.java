@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.compress.archivers.dump.InvalidFormatException;
@@ -18,25 +15,49 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
+//https://stackoverflow.com/questions/50767762/unable-to-get-hyperlink-label-for-docx-file-using-apache-poi
+//Look at to find link
+
+//https://stackoverflow.com/questions/40912421/how-to-find-and-replace-text-in-word-files-both-doc-and-docx
+//find and replace
+
 public class FindFile {
 	
-	public static void findFile(String directoryInput) {
+	//private static final String OUTPUT = 
+			//"C:\\Users\\eoi61\\Dropbox\\Project_Workplace\\WorkProjects\\Files\\";
+	
+	public static void findFile(String path) {
 		
-		File directory = new File(directoryInput);
+		File directory = new File(path);
 		File[] fileList = directory.listFiles();
 		
 		for (int i = 0; i < fileList.length; i++) {
 			if (fileList[i].isFile()) {
-				System.out.println("File" + fileList[i].getName());
+				System.out.println("File " + fileList[i].getName());
 			}
 			else if (fileList[i].isDirectory()) {
-				System.out.println("Directory" + fileList[i].getName());
+				System.out.println("Directory " + fileList[i].getName());
+			}
+		} 
+	}
+	
+	public static int getFileTotal(String directoryInput) {
+		File directory = new File(directoryInput);
+		File[] fileList = directory.listFiles();
+		
+		int fileCount = 0;
+		
+		for (int i = 0; i < fileList.length; i++) {
+			if (fileList[i].isFile()) {
+				fileCount++;
 			}
 		} 
 		
+		return fileCount;
 	}
 	
-	public static void find_Replace_DocX(String path, String replacement) throws IOException, InvalidFormatException {
+	public static void find_Remove_DocX(String path, String replacement) throws IOException, 
+	InvalidFormatException {
 		try {
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file);
@@ -61,7 +82,7 @@ public class FindFile {
 				}
 			}
 			
-			//Find and replace in tables
+			//Find and replace in tables->row->cell->paragraph
 			List<XWPFTable> tableList = document.getTables();
 			
 			for (XWPFTable table : tableList) {
@@ -92,12 +113,19 @@ public class FindFile {
 				}
 			}
 			
-			document.write(new FileOutputStream("C:\\\\Users\\\\eoi61\\\\Dropbox\\\\Project_Workplace\\\\WorkProjects\\\\Files"));
+			//create new file
+			//String newOutput = OUTPUT + "new" + file.getName();
+			//System.out.println(newOutput);
+			//document.write(new FileOutputStream(newOutput));
+			
+			//replace file
+			document.write(new FileOutputStream(path));
 			
 			//close FileInputSTream, XWPFDocument
 			fis.close();
 			document.close();
 			} 
+		
 		catch (Exception ex) {
 				ex.printStackTrace();
 		}
