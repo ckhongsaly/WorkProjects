@@ -13,14 +13,8 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 public class ReadDocX {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("Class ReadDocx.");
-		readDocXFile();
-	}
-	
-	public static void readDocXFile() {
-		String path = "C:/Users/CatherineKhongsaly/Documents/Test/Test Template.docx";
+	public void readDocXFile(String path) {
+		
 		
 		try {
 			
