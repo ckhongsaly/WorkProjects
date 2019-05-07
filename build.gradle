@@ -23,16 +23,14 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
 	compile "junit:junit:4.12" 
+	// https://mvnrepository.com/artifact/org.apache.poi/poi
+	compile group: 'org.apache.poi', name: 'poi', version: '4.1.0'
 }
 
 test{
 	filter{
 	//specific test class 
-	includeTestsMatching "FactoryPatternTest"
-	includeTestsMatching "DecoratorPatternTest"
-	includeTestsMatching "MediatorPatternTest"
 	}
-}
 
 // Will generate jacocoTestReport
 jacocoTestReport {
