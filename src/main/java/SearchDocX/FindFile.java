@@ -62,7 +62,7 @@ public class FindFile {
 	
 	//find and remove text from docx
 	//overwrite docx with change
-	public static void find_Remove_DocX(String path, String replacement) throws IOException, 
+	public static void find_Remove_DocX(String path, String replacement, String newValue) throws IOException, 
 	InvalidFormatException {
 		try {
 			File file = new File(path);
@@ -81,7 +81,7 @@ public class FindFile {
 						String text = r.getText(0);
 						
 						if (text != null && text.contains(replacement)) {
-							text = text.replace(replacement, ""); //remove text
+							text = text.replace(replacement, newValue); //remove text
 							r.setText(text,0);
 						}
 					}
@@ -137,7 +137,7 @@ public class FindFile {
 		}
 	}//end find_Remove_DocX
 	
-	public static void find_RemoveLink_DocX(String path, String replacement) {
+	public static void find_RemoveLink_DocX(String path, String replacement, String newValue) {
 		
 		try {
 			File file = new File(path);
@@ -176,7 +176,7 @@ public class FindFile {
 		}
 	}
 	
-	public static int find_Text(String path, String replacement) {
+	public static int find_TextDocX(String path, String replacement) {
 		int countText = 0;
 		try {
 			File file = new File(path);

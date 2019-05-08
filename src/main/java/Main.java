@@ -9,8 +9,9 @@ import main.java.SearchDocX.FindFile;
 
 public class Main {
 	private static final String DIRECTORY = 
-			"C:\\Users\\eoi61\\Dropbox\\Project_Workplace\\WorkProjects\\Files";
+			"C:\\Users\\CatherineKhongsaly\\Dropbox\\Project_Workplace\\WorkProjects\\Files";
 	private static final String PORT_REMOVAL = ":0248";
+	private static final String FIND_TEXT = "youtube";
 	private static String tempPath;
 
 	public static void main(String[] args) throws IOException{
@@ -29,7 +30,8 @@ public class Main {
 			if (fileList[i].isFile()) {
 				tempPath = DIRECTORY + "\\" + fileList[i].getName();
 				System.out.println("Path: " + tempPath);
-				System.out.println("Number of links: " + FindFile.findLinkDocX(tempPath, PORT_REMOVAL));
+				//System.out.println("Number of links: " + FindFile.findLinkDocX(tempPath, PORT_REMOVAL));
+				System.out.println("Number of text found in docx: " + FindFile.find_TextDocX(tempPath, FIND_TEXT));
 			}
 		} 
 		
