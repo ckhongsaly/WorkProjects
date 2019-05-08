@@ -137,7 +137,7 @@ public class FindFile {
 		}
 	}//end find_Remove_DocX
 	
-	public static void find_RemoveLink_DocX(String path, String removal) {
+	public static void find_RemoveLink_DocX(String path, String replacement) {
 		
 		try {
 			File file = new File(path);
@@ -157,7 +157,7 @@ public class FindFile {
 						if(r instanceof XWPFHyperlinkRun) {
 							XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
 							
-							if(link != null && link.getURL().contains(removal)) {
+							if(link != null && link.getURL().contains(replacement)) {
 								//add link to list
 								//remove
 							}
@@ -174,6 +174,81 @@ public class FindFile {
 		catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public static int find_Text(String path, String replacement) {
+		int countText = 0;
+		try {
+			File file = new File(path);
+			FileInputStream fis = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
+			
+			//Find and replace in paragraph
+			List<XWPFParagraph> paragraphList = document.getParagraphs();
+			
+			for (XWPFParagraph paragraph : paragraphList) {
+				List<XWPFRun> runs = paragraph.getRuns();
+				
+				if(runs != null) {
+					
+					for (XWPFRun r: runs) {
+						String text = r.getText(0);
+						
+						if (text != null && text.contains(replacement)) {
+							countText++;
+						}
+					}
+				}
+			}
+			
+			//Find and replace in tables->row->cell->paragraph
+			List<XWPFTable> tableList = document.getTables();
+			
+			for (XWPFTable table : tableList) {
+				List<XWPFTableRow> rowList = table.getRows();
+				
+				for (XWPFTableRow row: rowList) {
+					List<XWPFTableCell> cellList = row.getTableCells();
+					
+					for(XWPFTableCell cell : cellList) {
+						paragraphList = cell.getParagraphs();
+						
+						for(XWPFParagraph paragraph: paragraphList) {
+							List<XWPFRun> runs = paragraph.getRuns();
+							
+							if(runs != null) {
+								
+								for (XWPFRun r: runs) {
+									String text = r.getText(0);
+									
+									if (text != null && text.contains(replacement)) {
+										countText++;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			//create new file
+			//String newOutput = OUTPUT + "new" + file.getName();
+			//System.out.println(newOutput);
+			//document.write(new FileOutputStream(newOutput));
+			
+			//replace file
+			document.write(new FileOutputStream(path));
+			
+			//close FileInputSTream, XWPFDocument
+			fis.close();
+			document.close();
+			} 
+		
+		catch (Exception ex) {
+				ex.printStackTrace();
+		}
+		
+		return countText;
 	}
 	
 public static int findLinkDocX(String path, String removal) {
