@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.commons.compress.archivers.dump.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFHyperlink;
+import org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
@@ -26,6 +28,7 @@ public class FindFile {
 	//private static final String OUTPUT = 
 			//"C:\\Users\\eoi61\\Dropbox\\Project_Workplace\\WorkProjects\\Files\\";
 	
+	//List out files in path
 	public static void findFile(String path) {
 		
 		File directory = new File(path);
@@ -39,10 +42,11 @@ public class FindFile {
 				System.out.println("Directory " + fileList[i].getName());
 			}
 		} 
-	}
+	}//findFile
 	
-	public static int getFileTotal(String directoryInput) {
-		File directory = new File(directoryInput);
+	//return total number of files in path
+	public static int getFileTotal(String path) {
+		File directory = new File(path);
 		File[] fileList = directory.listFiles();
 		
 		int fileCount = 0;
@@ -54,8 +58,10 @@ public class FindFile {
 		} 
 		
 		return fileCount;
-	}
+	}//end getFileTotal
 	
+	//find and remove text from docx
+	//overwrite docx with change
 	public static void find_Remove_DocX(String path, String replacement) throws IOException, 
 	InvalidFormatException {
 		try {
@@ -129,6 +135,88 @@ public class FindFile {
 		catch (Exception ex) {
 				ex.printStackTrace();
 		}
+	}//end find_Remove_DocX
+	
+	public static void find_RemoveLink_DocX(String path, String removal) {
+		
+		try {
+			File file = new File(path);
+			FileInputStream fis = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
+			
+			//Find and replace in paragraph
+			List<XWPFParagraph> paragraphList = document.getParagraphs();
+			
+			for (XWPFParagraph paragraph : paragraphList) {
+				List<XWPFRun> runs = paragraph.getRuns();
+				
+				if(runs != null) {
+					
+					for (XWPFRun r: runs) {
+						
+						if(r instanceof XWPFHyperlinkRun) {
+							XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
+							
+							if(link != null && link.getURL().contains(removal)) {
+								//add link to list
+								//remove
+							}
+						}
+						
+					}
+				}
+			}
+			
+			//close FileInputSTream, XWPFDocument
+			fis.close();
+			document.close();
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+public static int findLinkDocX(String path, String removal) {
+	
+	int linkCounter = 0;
+		
+	try {
+		File file = new File(path);
+		FileInputStream fis = new FileInputStream(file);
+		XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
+		
+		//Find and replace in paragraph
+		List<XWPFParagraph> paragraphList = document.getParagraphs();
+		
+		for (XWPFParagraph paragraph : paragraphList) {
+			List<XWPFRun> runs = paragraph.getRuns();
+			
+			if(runs != null) {
+				
+				for (XWPFRun r: runs) {
+					
+					if(r instanceof XWPFHyperlinkRun) {
+						XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
+						System.out.println("Testing Link: " + link);
+						if(link != null && link.getURL().contains(removal)) {
+							linkCounter++;
+						}
+					}
+					
+				}
+			}
+		}
+		
+		//close FileInputSTream, XWPFDocument
+		fis.close();
+		document.close();
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	
+	return linkCounter;
+	
 	}
 	
 }//end of FindFile
