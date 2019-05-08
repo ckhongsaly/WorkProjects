@@ -14,14 +14,18 @@ public class Main {
 	private static final String TEXT_REMOVAL = "http";
 	private static String tempPath;
 
+	/**
+	 * Description: Runs program to find and replace items in docx file
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException{
 		
 		for (int i = 0; i < 3; i++) {
 			System.out.print("--------------------------------------");
 		}
 		System.out.println();
-		System.out.println("Finding Link with Port number");
-		System.out.println(DIRECTORY);
+		System.out.println("Finding Link with Port number in Directory " + DIRECTORY);
 		
 		File directory = new File(DIRECTORY);
 		File[] fileList = directory.listFiles();
@@ -29,9 +33,9 @@ public class Main {
 		for (int i = 0; i < fileList.length; i++) {
 			if (fileList[i].isFile()) {
 				tempPath = DIRECTORY + "\\" + fileList[i].getName();
-				System.out.println("Path: " + tempPath);
-				System.out.println("Number of links: " + FindFile.find_LinkDocX(tempPath, PORT_REMOVAL));
-				System.out.println("Number of text found in docx: " + FindFile.find_TextDocX(tempPath, TEXT_REMOVAL));
+				if(FindFile.find_LinkDocX(tempPath, PORT_REMOVAL) > 0) {
+					System.out.println(fileList[i].getName());
+				}
 			}
 		} 
 		

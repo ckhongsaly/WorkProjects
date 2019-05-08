@@ -28,7 +28,10 @@ public class FindFile {
 	//private static final String OUTPUT = 
 			//"C:\\Users\\eoi61\\Dropbox\\Project_Workplace\\WorkProjects\\Files\\";
 	
-	//List out files in path
+	/**
+	 * List out files in a path
+	 * @param path
+	 */
 	public static void find_File(String path) {
 		
 		File directory = new File(path);
@@ -44,7 +47,11 @@ public class FindFile {
 		} 
 	}//findFile
 	
-	//return total number of files in path
+	/**
+	 * Return total number of files in path
+	 * @param path
+	 * @return fileCount
+	 */
 	public static int get_File_Total(String path) {
 		File directory = new File(path);
 		File[] fileList = directory.listFiles();
@@ -60,8 +67,15 @@ public class FindFile {
 		return fileCount;
 	}//end getFileTotal
 	
-	//find and remove text from docx
-	//overwrite docx with change
+	/**
+	 * Description: Search path for file, search docx for replacement and then update replacement
+	 * to newValue. Upload new file.
+	 * @param path
+	 * @param replacement
+	 * @param newValue
+	 * @throws IOException
+	 * @throws InvalidFormatException
+	 */
 	public static void find_Remove_DocX(String path, String replacement, String newValue) throws IOException, 
 	InvalidFormatException {
 		try {
@@ -137,6 +151,13 @@ public class FindFile {
 		}
 	}//end find_Remove_DocX
 	
+	/**
+	 * Description: Search path for file, search links in docx for replacement and 
+	 * then update replacement to newValue. Upload new file.
+	 * @param path
+	 * @param replacement
+	 * @param newValue
+	 */
 	public static void find_RemoveLink_DocX(String path, String replacement, String newValue) {
 		
 		try {
@@ -174,8 +195,14 @@ public class FindFile {
 		catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
+	}//end of find_RemoveLink_DocX
 	
+	/**
+	 * Description: Locate text in path and return value
+	 * @param path
+	 * @param replacement
+	 * @return return total text found in docx
+	 */
 	public static int find_TextDocX(String path, String replacement) {
 		int countText = 0;
 		
@@ -232,14 +259,6 @@ public class FindFile {
 				}
 			}
 			
-			//create new file
-			//String newOutput = OUTPUT + "new" + file.getName();
-			//System.out.println(newOutput);
-			//document.write(new FileOutputStream(newOutput));
-			
-			//replace file
-			document.write(new FileOutputStream(path));
-			
 			//close FileInputSTream, XWPFDocument
 			fis.close();
 			document.close();
@@ -250,90 +269,92 @@ public class FindFile {
 		}
 		
 		return countText;
-	}
+	}//end of find_TextDocX
 	
-public static int find_LinkDocX(String path, String replacement) {
-	
-	int linkCounter = 0;
-	
-	try {
-		File file = new File(path);
-		FileInputStream fis = new FileInputStream(file);
-		XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
+	/**
+	 * Description: Locate replacement in path and return value
+	 * @param path
+	 * @param replacement
+	 * @return return total text found in link for docx
+	 */
+	public static int find_LinkDocX(String path, String replacement) {
 		
-		//Find and replace in paragraph
-		List<XWPFParagraph> paragraphList = document.getParagraphs();
+		int linkCounter = 0;
 		
-		for (XWPFParagraph paragraph : paragraphList) {
-			List<XWPFRun> runs = paragraph.getRuns();
+		try {
+			File file = new File(path);
+			FileInputStream fis = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
 			
-			if(runs != null) {
+			//Find and replace in paragraph
+			List<XWPFParagraph> paragraphList = document.getParagraphs();
+			
+			for (XWPFParagraph paragraph : paragraphList) {
+				List<XWPFRun> runs = paragraph.getRuns();
 				
-				for (XWPFRun r: runs) {
+				if(runs != null) {
 					
-					if(r instanceof XWPFHyperlinkRun) {
-						XWPFHyperlink link = ((XWPFHyperlinkRun)r).getHyperlink(document);
+					for (XWPFRun r: runs) {
 						
-						if(link != null && link.getURL().contains(replacement)) {
-							linkCounter++;
+						if(r instanceof XWPFHyperlinkRun) {
+							XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
+							
+							if(link != null && link.getURL().contains(replacement)) {
+								//System.out.println(link.getURL());
+								linkCounter++;
+							}
 						}
+						
 					}
 				}
 			}
-		}
-		
-		//Find and replace in tables->row->cell->paragraph
-		List<XWPFTable> tableList = document.getTables();
-		
-		for (XWPFTable table : tableList) {
-			List<XWPFTableRow> rowList = table.getRows();
 			
-			for (XWPFTableRow row: rowList) {
-				List<XWPFTableCell> cellList = row.getTableCells();
+			//Find and replace in tables->row->cell->paragraph
+			List<XWPFTable> tableList = document.getTables();
+			
+			for (XWPFTable table : tableList) {
+				List<XWPFTableRow> rowList = table.getRows();
 				
-				for(XWPFTableCell cell : cellList) {
-					paragraphList = cell.getParagraphs();
+				for (XWPFTableRow row: rowList) {
+					List<XWPFTableCell> cellList = row.getTableCells();
 					
-					for(XWPFParagraph paragraph: paragraphList) {
-						List<XWPFRun> runs = paragraph.getRuns();
+					for(XWPFTableCell cell : cellList) {
+						paragraphList = cell.getParagraphs();
 						
-						if(runs != null) {
+						for(XWPFParagraph paragraph: paragraphList) {
+							List<XWPFRun> runs = paragraph.getRuns();
 							
-							for (XWPFRun r: runs) {
+							if(runs != null) {
 								
-								if(r instanceof XWPFHyperlinkRun) {
-									XWPFHyperlink link = ((XWPFHyperlinkRun)r).getHyperlink(document);
+								for (XWPFRun r: runs) {
 									
-									if(link != null && link.getURL().contains(replacement)) {
-										linkCounter++;
+									if(r instanceof XWPFHyperlinkRun) {
+										XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
+										
+										if(link != null && link.getURL().contains(replacement)) {
+											//System.out.println(link.getURL());
+											linkCounter++;
+										}
 									}
+									
 								}
 							}
 						}
 					}
 				}
 			}
+			
+			//close FileInputSTream, XWPFDocument
+			fis.close();
+			document.close();
+			} 
+		
+		catch (Exception ex) {
+				ex.printStackTrace();
 		}
 		
-		//create new file
-		//String newOutput = OUTPUT + "new" + file.getName();
-		//System.out.println(newOutput);
-		//document.write(new FileOutputStream(newOutput));
+		return linkCounter;
 		
-		//replace file
-		document.write(new FileOutputStream(path));
-		
-		//close FileInputSTream, XWPFDocument
-		fis.close();
-		document.close();
-		} 
-	
-	catch (Exception ex) {
-			ex.printStackTrace();
-	}
-	
-	return linkCounter;
-	
-	}
+	}//end of find_LinkDocX
 	
 }//end of FindFile

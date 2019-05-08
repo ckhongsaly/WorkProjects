@@ -24,6 +24,10 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 
 public class ReadDocX {
 
+	/**
+	 * Description: Read docX file
+	 * @param path
+	 */
 	public static void read_DocXFile(String path) {
 		
 		try {
@@ -45,8 +49,12 @@ public class ReadDocX {
 			e.printStackTrace();
 			
 		}
-	}// end of readDocXFile
+	}// end of read_DocXFile
 	
+	/**
+	 * Description: Read header and footer in docx file
+	 * @param path
+	 */
 	public static void read_HeaderFooterDocX (String path) {
 		
 		try {
@@ -78,8 +86,12 @@ public class ReadDocX {
 			ex.printStackTrace();
 		}
 
-	}//end of readHeaderFooterDocX
+	}//end of read_HeaderFooterDocX
 	
+	/**
+	 * Description: Read paragraphs in docx file
+	 * @param path
+	 */
 	public static void read_ParagraphDocX(String path) {
 		try {
 			File file = new File(path);
@@ -111,8 +123,12 @@ public class ReadDocX {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
+	}//end of read_ParagraphDocX
 	
+	/**
+	 * Description: Read content in tables docx file
+	 * @param path
+	 */
 	public static void read_TableDocX(String path) {
 		try {
 			File file = new File(path);
@@ -143,8 +159,12 @@ public class ReadDocX {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
+	}// end of read_TableDocX
 	
+	/**
+	 * Description: Read style of docx file
+	 * @param path
+	 */
 	public static void read_Style(String path) {
 		try {
 			File file = new File(path);
@@ -173,8 +193,12 @@ public class ReadDocX {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
+	}//end of read_Style
 	
+	/**
+	 * Description: Read images in docx file
+	 * @param path
+	 */
 	public static void read_Image(String path) {
 		try {
 			File file = new File(path);
@@ -193,7 +217,7 @@ public class ReadDocX {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
+	}// end of read_Image
 	
 }//end of class
 
