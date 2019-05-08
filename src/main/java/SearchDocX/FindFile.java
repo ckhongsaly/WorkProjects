@@ -29,7 +29,7 @@ public class FindFile {
 			//"C:\\Users\\eoi61\\Dropbox\\Project_Workplace\\WorkProjects\\Files\\";
 	
 	//List out files in path
-	public static void findFile(String path) {
+	public static void find_File(String path) {
 		
 		File directory = new File(path);
 		File[] fileList = directory.listFiles();
@@ -45,7 +45,7 @@ public class FindFile {
 	}//findFile
 	
 	//return total number of files in path
-	public static int getFileTotal(String path) {
+	public static int get_File_Total(String path) {
 		File directory = new File(path);
 		File[] fileList = directory.listFiles();
 		
@@ -178,6 +178,7 @@ public class FindFile {
 	
 	public static int find_TextDocX(String path, String replacement) {
 		int countText = 0;
+		
 		try {
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file);
@@ -251,10 +252,10 @@ public class FindFile {
 		return countText;
 	}
 	
-public static int findLinkDocX(String path, String removal) {
+public static int find_LinkDocX(String path, String replacement) {
 	
 	int linkCounter = 0;
-		
+	
 	try {
 		File file = new File(path);
 		FileInputStream fis = new FileInputStream(file);
@@ -271,24 +272,65 @@ public static int findLinkDocX(String path, String removal) {
 				for (XWPFRun r: runs) {
 					
 					if(r instanceof XWPFHyperlinkRun) {
-						XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
-						System.out.println("Testing Link: " + link);
-						if(link != null && link.getURL().contains(removal)) {
+						XWPFHyperlink link = ((XWPFHyperlinkRun)r).getHyperlink(document);
+						
+						if(link != null && link.getURL().contains(replacement)) {
 							linkCounter++;
 						}
 					}
-					
 				}
 			}
 		}
 		
+		//Find and replace in tables->row->cell->paragraph
+		List<XWPFTable> tableList = document.getTables();
+		
+		for (XWPFTable table : tableList) {
+			List<XWPFTableRow> rowList = table.getRows();
+			
+			for (XWPFTableRow row: rowList) {
+				List<XWPFTableCell> cellList = row.getTableCells();
+				
+				for(XWPFTableCell cell : cellList) {
+					paragraphList = cell.getParagraphs();
+					
+					for(XWPFParagraph paragraph: paragraphList) {
+						List<XWPFRun> runs = paragraph.getRuns();
+						
+						if(runs != null) {
+							
+							for (XWPFRun r: runs) {
+								
+								if(r instanceof XWPFHyperlinkRun) {
+									XWPFHyperlink link = ((XWPFHyperlinkRun)r).getHyperlink(document);
+									
+									if(link != null && link.getURL().contains(replacement)) {
+										linkCounter++;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		//create new file
+		//String newOutput = OUTPUT + "new" + file.getName();
+		//System.out.println(newOutput);
+		//document.write(new FileOutputStream(newOutput));
+		
+		//replace file
+		document.write(new FileOutputStream(path));
+		
 		//close FileInputSTream, XWPFDocument
 		fis.close();
 		document.close();
-		}
-		catch (Exception ex) {
+		} 
+	
+	catch (Exception ex) {
 			ex.printStackTrace();
-		}
+	}
 	
 	return linkCounter;
 	

@@ -24,7 +24,7 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 
 public class ReadDocX {
 
-	public static void readDocXFile(String path) {
+	public static void read_DocXFile(String path) {
 		
 		try {
 			
@@ -47,7 +47,7 @@ public class ReadDocX {
 		}
 	}// end of readDocXFile
 	
-	public static void readHeaderFooterDocX (String path) {
+	public static void read_HeaderFooterDocX (String path) {
 		
 		try {
 			
@@ -80,7 +80,7 @@ public class ReadDocX {
 
 	}//end of readHeaderFooterDocX
 	
-	public static void readParagraphDocX(String path) {
+	public static void read_ParagraphDocX(String path) {
 		try {
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file);
@@ -113,7 +113,7 @@ public class ReadDocX {
 		}
 	}
 	
-	public static void readTableDocX(String path) {
+	public static void read_TableDocX(String path) {
 		try {
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file);
@@ -145,7 +145,7 @@ public class ReadDocX {
 		}
 	}
 	
-	public static void readStyle(String path) {
+	public static void read_Style(String path) {
 		try {
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file);
@@ -175,7 +175,7 @@ public class ReadDocX {
 		}
 	}
 	
-	public static void readImage(String path) {
+	public static void read_Image(String path) {
 		try {
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file);
