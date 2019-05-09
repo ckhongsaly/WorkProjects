@@ -17,16 +17,21 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
-//https://stackoverflow.com/questions/50767762/unable-to-get-hyperlink-label-for-docx-file-using-apache-poi
-//Look at to find link
+//https://stackoverflow.com/questions/53229817/concurrentmodificationexception-when-trying-to-replace-xwpfhyperlink-for-xwpfrun
+//replace link
 
-//https://stackoverflow.com/questions/40912421/how-to-find-and-replace-text-in-word-files-both-doc-and-docx
-//find and replace
+//https://stackoverflow.com/questions/49192481/how-to-create-a-existing-file-link-in-poi-word-format
+//create link
+
+//https://stackoverflow.com/questions/35088893/apache-poi-remove-cthyperlink-low-level-code
+//create link
+
+//https://www.programcreek.com/java-api-examples/?class=org.apache.poi.xwpf.usermodel.XWPFParagraph&method=createRun
+//examples
 
 public class FindFile {
 	
-	//private static final String OUTPUT = 
-			//"C:\\Users\\eoi61\\Dropbox\\Project_Workplace\\WorkProjects\\Files\\";
+	private static XWPFHyperlink tempLink;
 	
 	/**
 	 * List out files in a path
@@ -177,10 +182,9 @@ public class FindFile {
 						
 						if(r instanceof XWPFHyperlinkRun) {
 							XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
-							
+
 							if(link != null && link.getURL().contains(replacement)) {
-								//add link to list
-								//remove
+								//Need to figure out
 							}
 						}
 						
@@ -188,12 +192,47 @@ public class FindFile {
 				}
 			}
 			
+			//Find and replace in tables->row->cell->paragraph
+			List<XWPFTable> tableList = document.getTables();
+			
+			for (XWPFTable table : tableList) {
+				List<XWPFTableRow> rowList = table.getRows();
+				
+				for (XWPFTableRow row: rowList) {
+					List<XWPFTableCell> cellList = row.getTableCells();
+					
+					for(XWPFTableCell cell : cellList) {
+						paragraphList = cell.getParagraphs();
+						
+						for(XWPFParagraph paragraph: paragraphList) {
+							List<XWPFRun> runs = paragraph.getRuns();
+							
+							if(runs != null) {
+								
+								for (XWPFRun r: runs) {
+									
+									if(r instanceof XWPFHyperlinkRun) {
+										XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
+										String tempLink = ((XWPFHyperlinkRun) r).getHyperlinkId();
+
+										if(link != null && link.getURL().contains(replacement)) {
+											System.out.println("Link to replace: " + tempLink);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
 			//close FileInputSTream, XWPFDocument
 			fis.close();
 			document.close();
-		}
+			} 
+		
 		catch (Exception ex) {
-			ex.printStackTrace();
+				ex.printStackTrace();
 		}
 	}//end of find_RemoveLink_DocX
 	
@@ -280,6 +319,7 @@ public class FindFile {
 	public static int find_LinkDocX(String path, String replacement) {
 		
 		int linkCounter = 0;
+		boolean setup = true;
 		
 		try {
 			File file = new File(path);
@@ -299,12 +339,16 @@ public class FindFile {
 						if(r instanceof XWPFHyperlinkRun) {
 							XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
 							
-							if(link != null && link.getURL().contains(replacement)) {
-								//System.out.println(link.getURL());
+							if(setup) {
+								XWPFHyperlink tempLink = link;
+								setup = false;
+							}
+							if(link != null && link.getURL().contains(replacement) && tempLink != link) {
+								System.out.println(link.getURL());
+								tempLink = link;
 								linkCounter++;
 							}
 						}
-						
 					}
 				}
 			}
@@ -331,12 +375,16 @@ public class FindFile {
 									if(r instanceof XWPFHyperlinkRun) {
 										XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
 										
-										if(link != null && link.getURL().contains(replacement)) {
+										if(setup) {
+											XWPFHyperlink tempLink = link;
+											setup = false;
+										}
+										if(link != null && link.getURL().contains(replacement) && tempLink != link) {
 											//System.out.println(link.getURL());
+											tempLink = link;
 											linkCounter++;
 										}
-									}
-									
+									}	
 								}
 							}
 						}
@@ -356,5 +404,4 @@ public class FindFile {
 		return linkCounter;
 		
 	}//end of find_LinkDocX
-	
 }//end of FindFile
