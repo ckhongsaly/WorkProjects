@@ -12,22 +12,15 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHyperlink;
 import org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRelation;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
-//https://stackoverflow.com/questions/53229817/concurrentmodificationexception-when-trying-to-replace-xwpfhyperlink-for-xwpfrun
-//replace link
+//https://www.codota.com/code/java/classes/org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun
 
-//https://stackoverflow.com/questions/49192481/how-to-create-a-existing-file-link-in-poi-word-format
-//create link
-
-//https://stackoverflow.com/questions/35088893/apache-poi-remove-cthyperlink-low-level-code
-//create link
-
-//https://www.programcreek.com/java-api-examples/?class=org.apache.poi.xwpf.usermodel.XWPFParagraph&method=createRun
-//examples
+//https://github.com/Sayi/poi-tl/blob/master/src/main/java/com/deepoove/poi/XWPFParagraphWrapper.java#L49
 
 public class FindFile {
 	
@@ -224,6 +217,15 @@ boolean setup = true;
 											setup = false;
 										}
 										if(link != null && link.getURL().contains(replacement) && tempLink != link) {
+											//Create new link with replacement, get text, and create relationship
+											String newUrl = link.getURL().replaceAll(replacement, newValue);
+											String newText = r.text();
+											String id = r.getDocument().getPackagePart()
+													.addExternalRelationship(newUrl, XWPFRelation.HYPERLINK.getRelation()).getId();
+											
+											System.out.println("New URL: " + newUrl);
+											System.out.println("New Text: " + newText);
+											System.out.println("String id: " + id);
 											
 										}
 									}	
