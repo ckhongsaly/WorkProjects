@@ -65,7 +65,7 @@ public class Main {
 		System.out.println();
 		 
 		 
-		/**
+		
 		for (int i = 0; i < 3; i++) {
 			 System.out.print("--------------------------------------");
 		 }
@@ -78,10 +78,10 @@ public class Main {
 				tempPath = DIRECTORY + "\\" + fileList[i].getName();
 				
 				if(FindFile.find_LinkDocX(tempPath, PORT_REMOVAL) > 0) {
-					FindFile.find_RemoveLink_DocX(tempPath, PORT_REMOVAL, null);
+					FindFile.find_RemoveLink_DocX(tempPath, PORT_REMOVAL, "");
 				}
 			}
-		} */
+		} 
 	}
 	
 }

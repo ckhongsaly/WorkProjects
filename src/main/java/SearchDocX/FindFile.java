@@ -165,6 +165,8 @@ public class FindFile {
 	 */
 	public static void find_RemoveLink_DocX(String path, String replacement, String newValue) {
 		
+boolean setup = true;
+		
 		try {
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file);
@@ -182,12 +184,15 @@ public class FindFile {
 						
 						if(r instanceof XWPFHyperlinkRun) {
 							XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
-
-							if(link != null && link.getURL().contains(replacement)) {
-								//Need to figure out
+							
+							if(setup) {
+								XWPFHyperlink tempLink = link;
+								setup = false;
+							}
+							if(link != null && link.getURL().contains(replacement) && tempLink != link) {
+								//do something
 							}
 						}
-						
 					}
 				}
 			}
@@ -213,12 +218,15 @@ public class FindFile {
 									
 									if(r instanceof XWPFHyperlinkRun) {
 										XWPFHyperlink link = ((XWPFHyperlinkRun) r).getHyperlink(document);
-										String tempLink = ((XWPFHyperlinkRun) r).getHyperlinkId();
-
-										if(link != null && link.getURL().contains(replacement)) {
-											System.out.println("Link to replace: " + tempLink);
+										
+										if(setup) {
+											XWPFHyperlink tempLink = link;
+											setup = false;
 										}
-									}
+										if(link != null && link.getURL().contains(replacement) && tempLink != link) {
+											
+										}
+									}	
 								}
 							}
 						}
