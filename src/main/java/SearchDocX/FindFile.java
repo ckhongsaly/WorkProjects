@@ -256,9 +256,17 @@ public class FindFile {
 
 									        //remove hyperlink
 					                        //paragraph.removeRun(0);
+					                        int pos = r.getTextPosition();
+					                        IRunBody parent = r.getParent();
+					                        
+					                        if (parent instanceof XWPFParagraph) {
+					                            ((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
+					                        } else {
+					                            throw new IllegalStateException("this should not happend");
+					                        }
 					                        
 					                        //add new hyperlink
-									        r = new XWPFHyperlinkRun(newHyperlink, ctr, (IRunBody) paragraph);
+									        r = new XWPFHyperlinkRun(newHyperlink, ctr, r.getParent());
 										}
 									}	
 								}
