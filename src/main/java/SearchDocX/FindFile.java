@@ -235,29 +235,28 @@ public class FindFile {
 											
 											//Binds the link to the relationship
 											CTHyperlink newHyperlink = paragraph.getCTP().addNewHyperlink();
-									        newHyperlink.set(((XWPFHyperlinkRun) r).getCTHyperlink());
-									        newHyperlink.setId(id);
+											newHyperlink.set(((XWPFHyperlinkRun) r).getCTHyperlink());
+											newHyperlink.setId(id);
 									        
-									        //Creates the linked text
-									        CTText linkedText = CTText.Factory.newInstance();
-									        linkedText.setStringValue(newText);
+											//Creates the linked text
+											CTText linkedText = CTText.Factory.newInstance();
+											linkedText.setStringValue(newText);
 									        
-									        //Creates a XML word processing wrapper for Run
-									        CTR ctr = r.getCTR();
-									        ctr.setTArray(new CTText[] {linkedText});
+											//Creates a XML word processing wrapper for Run
+											CTR ctr = r.getCTR();
+											ctr.setTArray(new CTText[] {linkedText});
 									        
 									        //Style
-									        CTRPr rprC = ctr.addNewRPr();
-									        CTColor color = CTColor.Factory.newInstance();
-									        rprC.setColor(color);
-
-					                        CTRPr rpr_u = ctr.addNewRPr();
-					                        rpr_u.addNewU().setVal(STUnderline.SINGLE);
+											CTRPr rprC = ctr.addNewRPr();
+											CTColor color = CTColor.Factory.newInstance();
+											rprC.setColor(color);
+											CTRPr rpr_u = ctr.addNewRPr();
+											rpr_u.addNewU().setVal(STUnderline.SINGLE);
 
 									        //remove hyperlink
 					                        //paragraph.removeRun(0);
-					                        int pos = r.getTextPosition();
-					                        IRunBody parent = r.getParent();
+											int pos = r.getTextPosition();
+											IRunBody parent = r.getParent();
 					                        
 					                        if (parent instanceof XWPFParagraph) {
 					                            ((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
