@@ -193,12 +193,50 @@ public class FindFile {
 								setup = false;
 							}
 							if(link != null && link.getURL().contains(replacement) && tempLink != link) {
-								//do something
-							}
+								//Create new link with replacement, get text, and create relationship
+								String newUrl = link.getURL().replaceAll(replacement, newValue);
+								String newText = r.text();
+								String id = r.getDocument().getPackagePart()
+										.addExternalRelationship(newUrl, XWPFRelation.HYPERLINK.getRelation()).getId();
+								
+								//Binds the link to the relationship
+								CTHyperlink newHyperlink = paragraph.getCTP().addNewHyperlink();
+								newHyperlink.set(((XWPFHyperlinkRun) r).getCTHyperlink());
+								newHyperlink.setId(id);
+						        
+								//Creates the linked text
+								CTText linkedText = CTText.Factory.newInstance();
+								linkedText.setStringValue(newText);
+						        
+								//Creates a XML word processing wrapper for Run
+								CTR ctr = r.getCTR();
+								ctr.setTArray(new CTText[] {linkedText});
+						        
+								//Style
+								CTRPr rprC = ctr.addNewRPr();
+								CTColor color = CTColor.Factory.newInstance();
+								rprC.setColor(color);
+								CTRPr rpr_u = ctr.addNewRPr();
+								rpr_u.addNewU().setVal(STUnderline.SINGLE);
+
+								//remove hyperlink
+								//paragraph.removeRun(0);
+								int pos = r.getTextPosition();
+								IRunBody parent = r.getParent();
+		                        
+								if (parent instanceof XWPFParagraph) {
+									((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
+		                        } else {
+		                            throw new IllegalStateException("this should not happend");
+		                        }
+		                        
+		                        //add new hyperlink
+						        r = new XWPFHyperlinkRun(newHyperlink, ctr, r.getParent());
+						        }
+							}	
 						}
 					}
 				}
-			}
 			
 			//Find and replace in tables->row->cell->paragraph
 			List<XWPFTable> tableList = document.getTables();
@@ -246,35 +284,34 @@ public class FindFile {
 											CTR ctr = r.getCTR();
 											ctr.setTArray(new CTText[] {linkedText});
 									        
-									        //Style
+											//Style
 											CTRPr rprC = ctr.addNewRPr();
 											CTColor color = CTColor.Factory.newInstance();
 											rprC.setColor(color);
 											CTRPr rpr_u = ctr.addNewRPr();
 											rpr_u.addNewU().setVal(STUnderline.SINGLE);
 
-									        //remove hyperlink
-					                        //paragraph.removeRun(0);
+											//remove hyperlink
+											//paragraph.removeRun(0);
 											int pos = r.getTextPosition();
 											IRunBody parent = r.getParent();
 					                        
-					                        if (parent instanceof XWPFParagraph) {
-					                            ((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
+											if (parent instanceof XWPFParagraph) {
+												((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
 					                        } else {
 					                            throw new IllegalStateException("this should not happend");
 					                        }
 					                        
 					                        //add new hyperlink
 									        r = new XWPFHyperlinkRun(newHyperlink, ctr, r.getParent());
-										}
-									}	
+									        }
+										}	
+									}
 								}
 							}
 						}
 					}
 				}
-			}
-			
 			//replace file
 			document.write(new FileOutputStream(path));
 			
@@ -282,9 +319,8 @@ public class FindFile {
 			fis.close();
 			document.close();
 			} 
-		
 		catch (Exception ex) {
-				ex.printStackTrace();
+			ex.printStackTrace();
 		}
 	}//end of find_RemoveLink_DocX
 	
