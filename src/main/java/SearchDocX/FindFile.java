@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.compress.archivers.dump.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageRelationship;
+import org.apache.poi.xwpf.usermodel.IRunBody;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHyperlink;
 import org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun;
@@ -18,7 +19,12 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTColor;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHyperlink;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STUnderline;
 
 //https://www.codota.com/code/java/classes/org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun
 
@@ -163,7 +169,6 @@ public class FindFile {
 	public static void find_RemoveLink_DocX(String path, String replacement, String newValue) {
 		
 		boolean setup = true;
-		XWPFRun newRun = null;
 		
 		try {
 			File file = new File(path);
@@ -209,7 +214,7 @@ public class FindFile {
 						
 						for(XWPFParagraph paragraph: paragraphList) {
 							List<XWPFRun> runs = paragraph.getRuns();
-								
+							
 							if(runs != null) {
 								
 								for (XWPFRun r: runs) {
@@ -224,18 +229,36 @@ public class FindFile {
 										if(link != null && link.getURL().contains(replacement) && tempLink != link) {
 											//Create new link with replacement, get text, and create relationship
 											String newUrl = link.getURL().replaceAll(replacement, newValue);
-											//String newText = r.text();
-											PackageRelationship id = r.getDocument().getPackagePart()
-													.addExternalRelationship(newUrl, XWPFRelation.HYPERLINK.getRelation());
+											String newText = r.text();
+											String id = r.getDocument().getPackagePart()
+													.addExternalRelationship(newUrl, XWPFRelation.HYPERLINK.getRelation()).getId();
 											
+											//Binds the link to the relationship
 											CTHyperlink newHyperlink = paragraph.getCTP().addNewHyperlink();
 									        newHyperlink.set(((XWPFHyperlinkRun) r).getCTHyperlink());
-									        newHyperlink.setId(id.getId());
+									        newHyperlink.setId(id);
+									        
+									        //Creates the linked text
+									        CTText linkedText = CTText.Factory.newInstance();
+									        linkedText.setStringValue(newText);
+									        
+									        //Creates a XML word processing wrapper for Run
+									        CTR ctr = r.getCTR();
+									        ctr.setTArray(new CTText[] {linkedText});
+									        
+									        //Style
+									        CTRPr rprC = ctr.addNewRPr();
+									        CTColor color = CTColor.Factory.newInstance();
+									        rprC.setColor(color);
 
-									        newRun = new XWPFHyperlinkRun(newHyperlink, r.getCTR(), r.getParent());
+					                        CTRPr rpr_u = ctr.addNewRPr();
+					                        rpr_u.addNewU().setVal(STUnderline.SINGLE);
+
 									        //remove hyperlink
-									        //paragraph.getCTP().removeHyperlink(0);
-									        //paragraph.addRun(newRun);
+					                        //paragraph.removeRun(0);
+					                        
+					                        //add new hyperlink
+									        r = new XWPFHyperlinkRun(newHyperlink, ctr, (IRunBody) paragraph);
 										}
 									}	
 								}
@@ -244,6 +267,9 @@ public class FindFile {
 					}
 				}
 			}
+			
+			//replace file
+			document.write(new FileOutputStream(path));
 			
 			//close FileInputSTream, XWPFDocument
 			fis.close();
