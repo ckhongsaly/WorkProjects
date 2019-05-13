@@ -9,8 +9,8 @@ import main.java.SearchDocX.FindFile;
 
 public class Main {
 	private static final String DIRECTORY = 
-			//"C:\\Users\\CatherineKhongsaly\\Dropbox\\Project_Workplace\\WorkProjects\\Files";
-			"C:\\Users\\CatherineKhongsaly\\Documents\\FIG\\FIG Repository";
+			"C:\\Users\\CatherineKhongsaly\\Dropbox\\Project_Workplace\\WorkProjects\\Files";
+			//"C:\\Users\\CatherineKhongsaly\\Documents\\FIG\\FIG Repository";
 	private static final String PORT_REMOVAL = ":2048";
 	private static String tempPath;
 
@@ -67,7 +67,7 @@ public class Main {
 			System.out.print("--------------------------------------");
 		}
 		System.out.println();
-		System.out.println("Total links: " + totalLink);
+		System.out.println("Total embed links: " + totalLink);
 		for (int i = 0; i < 3; i++) {
 			System.out.print("--------------------------------------");
 		}
@@ -79,7 +79,7 @@ public class Main {
 		System.out.println();
 		 
 		 
-		/**
+		
 		for (int i = 0; i < 3; i++) {
 			 System.out.print("--------------------------------------");
 		 }
@@ -92,11 +92,11 @@ public class Main {
 				tempPath = DIRECTORY + "\\" + fileList[i].getName();
 				
 				if(FindFile.find_LinkDocX(tempPath, PORT_REMOVAL) > 0) {
-					//FindFile.find_RemoveLink_DocX(tempPath, PORT_REMOVAL, "");
+					FindFile.find_RemoveLink_DocX(tempPath, PORT_REMOVAL, "");
 				}
 			}
 		} 
-		*/
+		
 	}
 	
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.compress.archivers.dump.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageRelationship;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHyperlink;
 import org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun;
@@ -17,10 +18,13 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHyperlink;
 
 //https://www.codota.com/code/java/classes/org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun
 
 //https://github.com/Sayi/poi-tl/blob/master/src/main/java/com/deepoove/poi/XWPFParagraphWrapper.java#L49
+
+//https://stackoverflow.com/questions/35088893/apache-poi-remove-cthyperlink-low-level-code/35101440#35101440
 
 public class FindFile {
 	
@@ -158,7 +162,8 @@ public class FindFile {
 	 */
 	public static void find_RemoveLink_DocX(String path, String replacement, String newValue) {
 		
-boolean setup = true;
+		boolean setup = true;
+		XWPFRun newRun = null;
 		
 		try {
 			File file = new File(path);
@@ -204,7 +209,7 @@ boolean setup = true;
 						
 						for(XWPFParagraph paragraph: paragraphList) {
 							List<XWPFRun> runs = paragraph.getRuns();
-							
+								
 							if(runs != null) {
 								
 								for (XWPFRun r: runs) {
@@ -219,14 +224,18 @@ boolean setup = true;
 										if(link != null && link.getURL().contains(replacement) && tempLink != link) {
 											//Create new link with replacement, get text, and create relationship
 											String newUrl = link.getURL().replaceAll(replacement, newValue);
-											String newText = r.text();
-											String id = r.getDocument().getPackagePart()
-													.addExternalRelationship(newUrl, XWPFRelation.HYPERLINK.getRelation()).getId();
+											//String newText = r.text();
+											PackageRelationship id = r.getDocument().getPackagePart()
+													.addExternalRelationship(newUrl, XWPFRelation.HYPERLINK.getRelation());
 											
-											System.out.println("New URL: " + newUrl);
-											System.out.println("New Text: " + newText);
-											System.out.println("String id: " + id);
-											
+											CTHyperlink newHyperlink = paragraph.getCTP().addNewHyperlink();
+									        newHyperlink.set(((XWPFHyperlinkRun) r).getCTHyperlink());
+									        newHyperlink.setId(id.getId());
+
+									        newRun = new XWPFHyperlinkRun(newHyperlink, r.getCTR(), r.getParent());
+									        //remove hyperlink
+									        //paragraph.getCTP().removeHyperlink(0);
+									        //paragraph.addRun(newRun);
 										}
 									}	
 								}
