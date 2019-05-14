@@ -200,38 +200,14 @@ public class FindFile {
 										.addExternalRelationship(newUrl, XWPFRelation.HYPERLINK.getRelation()).getId();
 								
 								//Binds the link to the relationship
-								CTHyperlink newHyperlink = paragraph.getCTP().addNewHyperlink();
+								CTHyperlink newHyperlink = paragraph.getCTP().getHyperlinkArray(0);
 								newHyperlink.set(((XWPFHyperlinkRun) r).getCTHyperlink());
 								newHyperlink.setId(id);
-						        
-								//Creates the linked text
-								CTText linkedText = CTText.Factory.newInstance();
-								linkedText.setStringValue(newText);
-						        
-								//Creates a XML word processing wrapper for Run
-								CTR ctr = r.getCTR();
-								ctr.setTArray(new CTText[] {linkedText});
-						        
-								//Style
-								CTRPr rprC = ctr.addNewRPr();
-								CTColor color = CTColor.Factory.newInstance();
-								rprC.setColor(color);
-								CTRPr rpr_u = ctr.addNewRPr();
-								rpr_u.addNewU().setVal(STUnderline.SINGLE);
 
 								//remove hyperlink
-								//paragraph.removeRun(0);
 								int pos = r.getTextPosition();
 								IRunBody parent = r.getParent();
-		                        
-								if (parent instanceof XWPFParagraph) {
-									((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
-		                        } else {
-		                            throw new IllegalStateException("this should not happend");
-		                        }
-		                        
-		                        //add new hyperlink
-						        r = new XWPFHyperlinkRun(newHyperlink, ctr, r.getParent());
+		                        ((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
 						        }
 							}	
 						}
@@ -272,38 +248,14 @@ public class FindFile {
 													.addExternalRelationship(newUrl, XWPFRelation.HYPERLINK.getRelation()).getId();
 											
 											//Binds the link to the relationship
-											CTHyperlink newHyperlink = paragraph.getCTP().addNewHyperlink();
+											CTHyperlink newHyperlink = paragraph.getCTP().getHyperlinkArray(0);
 											newHyperlink.set(((XWPFHyperlinkRun) r).getCTHyperlink());
 											newHyperlink.setId(id);
 									        
-											//Creates the linked text
-											CTText linkedText = CTText.Factory.newInstance();
-											linkedText.setStringValue(newText);
-									        
-											//Creates a XML word processing wrapper for Run
-											CTR ctr = r.getCTR();
-											ctr.setTArray(new CTText[] {linkedText});
-									        
-											//Style
-											CTRPr rprC = ctr.addNewRPr();
-											CTColor color = CTColor.Factory.newInstance();
-											rprC.setColor(color);
-											CTRPr rpr_u = ctr.addNewRPr();
-											rpr_u.addNewU().setVal(STUnderline.SINGLE);
-
 											//remove hyperlink
-											//paragraph.removeRun(0);
 											int pos = r.getTextPosition();
 											IRunBody parent = r.getParent();
-					                        
-											if (parent instanceof XWPFParagraph) {
-												((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
-					                        } else {
-					                            throw new IllegalStateException("this should not happend");
-					                        }
-					                        
-					                        //add new hyperlink
-									        r = new XWPFHyperlinkRun(newHyperlink, ctr, r.getParent());
+					                        ((XWPFParagraph) parent).removeRun(((XWPFParagraph) parent).getRuns().indexOf(pos));
 									        }
 										}	
 									}
