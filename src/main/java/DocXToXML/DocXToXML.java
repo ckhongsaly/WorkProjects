@@ -77,6 +77,15 @@ public class DocXToXML {
 	 private static String end_of_answer = "</answer>";
 	 private static String feedback_start = "<feedback><text>";
 	 private static String feedback_end = "</text></feedback>";
+
+	 /**
+	 * Description: Determine whether the first character in string is an integer
+	 * @param str
+	 * @return return total text found in link for docx
+	 */
+	public static boolean isInteger(String str) {
+		return Character.isDigit(str.charAt(0));
+	}
 	
 	/**
 	 * Description: Locate questions in path and return total number of questions
@@ -89,6 +98,7 @@ public class DocXToXML {
 		
 		int questionCounter = 0;
 		int testInt = 0;
+		int debugCounter = 0;
 		
 		try {
 			File file = new File(path);
@@ -105,17 +115,12 @@ public class DocXToXML {
 
 					for (XWPFRun r: runs) {
 
-						try {
-							testInt = Integer.parseInt(r.text());
-
-							if(testInt > 0) {
-								questionCounter++;
-							}
-						}
-						catch(NumberFormatException e) {
-							e.printStackTrace();
-						}
+						System.out.println(debugCounter++ + ". "+  r.toString());
 						
+						String tempString = r.toString();
+						if(isInteger(tempString)){
+							questionCounter++;
+						}
 					}
 				}
 			}
@@ -132,4 +137,5 @@ public class DocXToXML {
 		return questionCounter;
 		
 	}//end of find_Questions
+	
 }//end of DocXToXML

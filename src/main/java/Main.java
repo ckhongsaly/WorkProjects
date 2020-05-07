@@ -55,6 +55,7 @@ public class Main {
 				//}
 				totalQuestion = DocXToXML.find_Questions(tempPath);
 
+				System.out.println(fileList[i].getName());
 			}
 		}
 
