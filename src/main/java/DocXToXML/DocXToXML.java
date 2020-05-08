@@ -104,8 +104,8 @@ public class DocXToXML {
 	 * @param str
 	 * @return return whether first character is *
 	 */
-	public static boolean is(String str) {
-		return str.charAt(0) == '*';
+	public static boolean isIncorrect(String str) {
+		return !Character.isDigit(str.charAt(0));
 	}
 
 	/**
@@ -210,6 +210,59 @@ public class DocXToXML {
 
 		return feedbackCounter;
 
-	}// end of find_Questions
+	}// end of find_Feedback
+
+
+	/**
+	 * Description: Locate questions in path and return total number of questions
+	 * 
+	 * @param path location of file
+	 * @return return total text found in link for docx
+	 */
+	public static int find_Answer(String path) {
+
+		System.out.println("Initalize find_Answer..");
+
+		int answerCounter = 0;
+		int debugCounter = 0;
+
+		try {
+			File file = new File(path);
+			FileInputStream fis = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
+
+			// Find and replace in paragraph
+			List<XWPFParagraph> paragraphList = document.getParagraphs();
+
+			for (XWPFParagraph paragraph : paragraphList) {
+				List<XWPFRun> runs = paragraph.getRuns();
+
+				if (runs != null) {
+
+					for (XWPFRun r : runs) {
+
+						// System.out.println(debugCounter++ + ". "+ r.toString());
+
+						String tempString = r.toString();
+						if (isAnswer(tempString)) {
+							answerCounter++;
+							System.out.println(answerCounter + ". " + r.toString());
+						}
+					}
+				}
+			}
+
+			// close FileInputSTream, XWPFDocument
+			fis.close();
+			document.close();
+		}
+
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return answerCounter;
+
+	}// end of find_Answer
 
 }// end of DocXToXML
