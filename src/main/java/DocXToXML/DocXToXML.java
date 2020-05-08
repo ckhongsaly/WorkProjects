@@ -42,7 +42,8 @@ public class DocXToXML {
 	private static XWPFHyperlink tempLink;
 
 	/**
-	 * Example of multichoice <question type="multichoice"> <answer fraction="100">
+	 * Example of multichoice 
+	 * <question type="multichoice"> <answer fraction="100">
 	 * <text>The correct answer</text> <feedback><text>Correct!</text></feedback>
 	 * </answer> <answer fraction="0"> <text>A distractor</text>
 	 * <feedback><text>Ooops!</text></feedback> </answer> <answer fraction="0">
@@ -71,7 +72,7 @@ public class DocXToXML {
 	 * Description: Determine whether the first character in string is an integer
 	 * 
 	 * @param str
-	 * @return return total text found in link for docx
+	 * @return return if first character is an integer
 	 */
 	public static boolean isInteger(String str) {
 		return Character.isDigit(str.charAt(0));
@@ -81,10 +82,30 @@ public class DocXToXML {
 	 * Description: Determine whether the first character in string is the feedback
 	 * 
 	 * @param str
-	 * @return return total text found in link for docx
+	 * @return return whether first character is ~
 	 */
 	public static boolean isFeedback(String str) {
 		return str.charAt(0) == '~';
+	}
+
+	/**
+	 * Description: Determine whether the first character in string is the answer
+	 * 
+	 * @param str
+	 * @return return whether first character is *
+	 */
+	public static boolean isAnswer(String str) {
+		return str.charAt(0) == '*';
+	}
+
+	/**
+	 * Description: Determine whether the first character in string is the answer
+	 * 
+	 * @param str
+	 * @return return whether first character is *
+	 */
+	public static boolean is(String str) {
+		return str.charAt(0) == '*';
 	}
 
 	/**
