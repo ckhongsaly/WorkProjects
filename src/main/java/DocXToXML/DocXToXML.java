@@ -1,3 +1,4 @@
+
 package main.java.DocXToXML;
 
 import java.io.File;
@@ -115,11 +116,12 @@ public class DocXToXML {
 
 					for (XWPFRun r: runs) {
 
-						System.out.println(debugCounter++ + ". "+  r.toString());
+						//System.out.println(debugCounter++ + ". "+  r.toString());
 						
 						String tempString = r.toString();
 						if(isInteger(tempString)){
 							questionCounter++;
+							System.out.println(questionCounter + ". "+  r.toString());
 						}
 					}
 				}
