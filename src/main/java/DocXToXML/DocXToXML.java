@@ -161,7 +161,7 @@ public class DocXToXML {
 	}// end of find_Questions
 
 	/**
-	 * Description: Locate questions in path and return total number of questions
+	 * Description: Locate feedback in path and return total number of feedbacks
 	 * 
 	 * @param path location of file
 	 * @return return total text found in link for docx
@@ -214,7 +214,7 @@ public class DocXToXML {
 
 
 	/**
-	 * Description: Locate questions in path and return total number of questions
+	 * Description: Locate correct answer  in path and return number of correct answers
 	 * 
 	 * @param path location of file
 	 * @return return total text found in link for docx
