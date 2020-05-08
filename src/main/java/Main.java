@@ -53,7 +53,7 @@ public class Main {
 					//totalLink = FindFile.find_LinkDocX(tempPath, PORT_REMOVAL) + totalLink;
 					//counter++;
 				//}
-				totalQuestion = DocXToXML.find_Questions(tempPath);
+				totalQuestion = DocXToXML.find_Question(tempPath);
 
 				System.out.println(fileList[i].getName());
 			}

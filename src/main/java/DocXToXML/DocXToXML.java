@@ -79,7 +79,7 @@ public class DocXToXML {
 	 private static String feedback_start = "<feedback><text>";
 	 private static String feedback_end = "</text></feedback>";
 
-	 /**
+	/**
 	 * Description: Determine whether the first character in string is an integer
 	 * @param str
 	 * @return return total text found in link for docx
@@ -87,13 +87,75 @@ public class DocXToXML {
 	public static boolean isInteger(String str) {
 		return Character.isDigit(str.charAt(0));
 	}
+
+	/**
+	 * Description: Determine whether the first character in string is the feedback
+	 * @param str
+	 * @return return total text found in link for docx
+	 */
+	public static boolean isFeedback(String str) {
+		return str.charAt(0) == '~';
+	}
 	
 	/**
 	 * Description: Locate questions in path and return total number of questions
-	 * @param path
+	 * @param path location of file
 	 * @return return total text found in link for docx
 	 */
-	public static int find_Questions(String path) {
+	public static int find_Question(String path) {
+		
+		System.out.println("Initalize find_Questions..");
+		
+		int questionCounter = 0;
+		int testInt = 0;
+		int debugCounter = 0;
+		
+		try {
+			File file = new File(path);
+			FileInputStream fis = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
+			
+			//Find and replace in paragraph
+			List<XWPFParagraph> paragraphList = document.getParagraphs();
+			
+			for (XWPFParagraph paragraph : paragraphList) {
+				List<XWPFRun> runs = paragraph.getRuns();
+				
+				if(runs != null) {
+
+					for (XWPFRun r: runs) {
+
+						//System.out.println(debugCounter++ + ". "+  r.toString());
+						
+						String tempString = r.toString();
+						if(isInteger(tempString)){
+							questionCounter++;
+							System.out.println(questionCounter + ". "+  r.toString());
+						}
+					}
+				}
+			}
+			
+			//close FileInputSTream, XWPFDocument
+			fis.close();
+			document.close();
+			} 
+		
+		catch (Exception ex) {
+				ex.printStackTrace();
+		}
+		
+		return questionCounter;
+		
+	}//end of find_Questions
+
+
+	/**
+	 * Description: Locate questions in path and return total number of questions
+	 * @param path location of file
+	 * @return return total text found in link for docx
+	 */
+	public static int find_Feedback(String path) {
 		
 		System.out.println("Initalize find_Questions..");
 		
