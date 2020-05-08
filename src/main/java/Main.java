@@ -28,6 +28,7 @@ public class Main {
 		File directory = new File(DIRECTORY);
 		File[] fileList = directory.listFiles();
 		int totalQuestion = 0;
+		int totalFeedback = 0;
 
 		//This is for link replacement
 		//int totalLink = 0;
@@ -54,6 +55,7 @@ public class Main {
 					//counter++;
 				//}
 				totalQuestion = DocXToXML.find_Question(tempPath);
+				totalFeedback = DocXToXML.find_Feedback(tempPath);
 
 				System.out.println(fileList[i].getName());
 			}
@@ -68,6 +70,12 @@ public class Main {
 		System.out.println();
 
 		System.out.println("Total number of questions in directory: " + totalQuestion);
+		for (int i = 0; i < 3; i++) {
+			System.out.print("--------------------------------------");
+		}
+		System.out.println();
+
+		System.out.println("Total number of feedbacks in directory: " + totalFeedback);
 		for (int i = 0; i < 3; i++) {
 			System.out.print("--------------------------------------");
 		}
