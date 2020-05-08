@@ -30,6 +30,7 @@ public class Main {
 		int totalQuestion = 0;
 		int totalFeedback = 0;
 		int totalAnswer = 0;
+		int totalIncorrect = 0;
 
 		//This is for link replacement
 		//int totalLink = 0;
@@ -58,6 +59,7 @@ public class Main {
 				totalQuestion = DocXToXML.find_Question(tempPath);
 				totalFeedback = DocXToXML.find_Feedback(tempPath);
 				totalAnswer = DocXToXML.find_Answer(tempPath);
+				totalIncorrect = DocXToXML.find_Incorrect(tempPath);
 
 				System.out.println(fileList[i].getName());
 			}
@@ -84,6 +86,12 @@ public class Main {
 		System.out.println();
 
 		System.out.println("Total number of answers in directory: " + totalAnswer);
+		for (int i = 0; i < 3; i++) {
+			System.out.print("--------------------------------------");
+		}
+		System.out.println();
+
+		System.out.println("Total number of incorrect answers in directory: " + totalIncorrect);
 		for (int i = 0; i < 3; i++) {
 			System.out.print("--------------------------------------");
 		}

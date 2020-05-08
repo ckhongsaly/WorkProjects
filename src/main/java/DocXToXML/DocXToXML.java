@@ -105,7 +105,14 @@ public class DocXToXML {
 	 * @return return whether first character is *
 	 */
 	public static boolean isIncorrect(String str) {
-		return !Character.isDigit(str.charAt(0));
+		boolean result = false;
+
+		if ( !Character.isDigit(str.charAt(0)) ) {
+			if (str.charAt(0) != '*' && str.charAt(0) != '~') {
+				result = true;
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -264,5 +271,58 @@ public class DocXToXML {
 		return answerCounter;
 
 	}// end of find_Answer
+
+
+	/**
+	 * Description: Locate incorrect answer  in path and return number of incorrect answers
+	 * 
+	 * @param path location of file
+	 * @return return total text found in link for docx
+	 */
+	public static int find_Incorrect(String path) {
+
+		System.out.println("Initalize find_Incorrect..");
+
+		int incorrectCounter = 0;
+		int debugCounter = 0;
+
+		try {
+			File file = new File(path);
+			FileInputStream fis = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
+
+			// Find and replace in paragraph
+			List<XWPFParagraph> paragraphList = document.getParagraphs();
+
+			for (XWPFParagraph paragraph : paragraphList) {
+				List<XWPFRun> runs = paragraph.getRuns();
+
+				if (runs != null) {
+
+					for (XWPFRun r : runs) {
+
+						// System.out.println(debugCounter++ + ". "+ r.toString());
+
+						String tempString = r.toString();
+						if (isIncorrect(tempString)) {
+							incorrectCounter++;
+							System.out.println(incorrectCounter + ". " + r.toString());
+						}
+					}
+				}
+			}
+
+			// close FileInputSTream, XWPFDocument
+			fis.close();
+			document.close();
+		}
+
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return incorrectCounter;
+
+	}// end of find_Incorrect
 
 }// end of DocXToXML
