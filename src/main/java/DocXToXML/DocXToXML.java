@@ -20,12 +20,16 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTColor;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHyperlink;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STUnderline;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import java.io.File;
 
 //https://www.codota.com/code/java/classes/org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun
 
@@ -36,6 +40,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STUnderline;
 //https://www.w3.org/standards/xml/core
 
 //https://docs.moodle.org/38/en/Moodle_XML_format
+
+//https://www.tutorialspoint.com/java_xml/java_dom_create_document.htm
 
 public class DocXToXML {
 
@@ -146,6 +152,7 @@ public class DocXToXML {
 						// System.out.println(debugCounter++ + ". "+ r.toString());
 
 						String tempString = r.toString();
+
 						if (isInteger(tempString)) {
 							questionCounter++;
 							System.out.println(questionCounter + ". " + r.toString());
@@ -198,6 +205,7 @@ public class DocXToXML {
 						// System.out.println(debugCounter++ + ". "+ r.toString());
 
 						String tempString = r.toString();
+
 						if (isFeedback(tempString)) {
 							feedbackCounter++;
 							System.out.println(feedbackCounter + ". " + r.toString());
@@ -251,6 +259,7 @@ public class DocXToXML {
 						// System.out.println(debugCounter++ + ". "+ r.toString());
 
 						String tempString = r.toString();
+
 						if (isAnswer(tempString)) {
 							answerCounter++;
 							System.out.println(answerCounter + ". " + r.toString());
@@ -304,6 +313,7 @@ public class DocXToXML {
 						// System.out.println(debugCounter++ + ". "+ r.toString());
 
 						String tempString = r.toString();
+
 						if (isIncorrect(tempString)) {
 							incorrectCounter++;
 							System.out.println(incorrectCounter + ". " + r.toString());
@@ -324,5 +334,109 @@ public class DocXToXML {
 		return incorrectCounter;
 
 	}// end of find_Incorrect
+
+	/**
+	 * Description: Convert respondus form quiz docx to xml
+	 * 
+	 * @param path location of file
+	 * @return return XML
+	 */
+	public static void convert_XML(String path) {
+
+		System.out.println("Initalize XML conversion..");
+
+		try {
+			DocumentBuilderFactory dbFactory =
+			DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.newDocument();
+			
+			// root element
+			Element rootElement = doc.createElement("quiz");
+			doc.appendChild(rootElement);
+   
+			// supercars element
+			Element supercar = doc.createElement("supercars");
+			rootElement.appendChild(supercar);
+   
+			// setting attribute to element
+			Attr attr = doc.createAttribute("company");
+			attr.setValue("Ferrari");
+			supercar.setAttributeNode(attr);
+   
+			// carname element
+			Element carname = doc.createElement("carname");
+			Attr attrType = doc.createAttribute("type");
+			attrType.setValue("formula one");
+			carname.setAttributeNode(attrType);
+			carname.appendChild(doc.createTextNode("Ferrari 101"));
+			supercar.appendChild(carname);
+   
+			Element carname1 = doc.createElement("carname");
+			Attr attrType1 = doc.createAttribute("type");
+			attrType1.setValue("sports");
+			carname1.setAttributeNode(attrType1);
+			carname1.appendChild(doc.createTextNode("Ferrari 202"));
+			supercar.appendChild(carname1);
+   
+			// write the content into xml file
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File("C:\\cars.xml"));
+			transformer.transform(source, result);
+			
+			// Output to console for testing
+			StreamResult consoleResult = new StreamResult(System.out);
+			transformer.transform(source, consoleResult);
+		 } catch (Exception e) {
+			e.printStackTrace();
+		 }
+
+		//int debugCounter = 0;
+
+		try {
+			File file = new File(path);
+			FileInputStream fis = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
+
+			// Find and replace in paragraph
+			List<XWPFParagraph> paragraphList = document.getParagraphs();
+
+			for (XWPFParagraph paragraph : paragraphList) {
+				List<XWPFRun> runs = paragraph.getRuns();
+
+				if (runs != null) {
+
+					for (XWPFRun r : runs) {
+
+						// System.out.println(debugCounter++ + ". "+ r.toString());
+
+						String tempString = r.toString();
+						if (isInteger(tempString)) {
+
+						} else if (isFeedback(tempString)) {
+
+						} else if (isAnswer(tempString)) {
+
+						} else if (isIncorrect(tempString)) {
+
+						}
+					}
+				}
+			}
+
+			// close FileInputSTream, XWPFDocument
+			fis.close();
+			document.close();
+		}
+
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}// end of convert_XML
+
+	
 
 }// end of DocXToXML
