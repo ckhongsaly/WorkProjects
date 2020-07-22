@@ -96,6 +96,8 @@ public class Main {
 			System.out.print("--------------------------------------");
 		}
 		System.out.println();
+		
+		DocXToXML.convert_XML(tempPath);
 
 
 		//Start of remove link

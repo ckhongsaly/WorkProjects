@@ -1,4 +1,3 @@
-
 package main.java.DocXToXML;
 
 import java.io.File;
@@ -46,17 +45,6 @@ import java.io.File;
 public class DocXToXML {
 
 	private static XWPFHyperlink tempLink;
-
-	/**
-	 * Example of multichoice 
-	 * <question type="multichoice"> <answer fraction="100">
-	 * <text>The correct answer</text> <feedback><text>Correct!</text></feedback>
-	 * </answer> <answer fraction="0"> <text>A distractor</text>
-	 * <feedback><text>Ooops!</text></feedback> </answer> <answer fraction="0">
-	 * <text>Another distractor</text> <feedback><text>Ooops!</text></feedback>
-	 * </answer> <shuffleanswers>1</shuffleanswers> <single>true</single>
-	 * <answernumbering>abc</answernumbering> </question>
-	 */
 
 	// For multiple choice questions
 	private static String question_multichoice = "<question type=\"multichoice\">\n";
@@ -337,6 +325,36 @@ public class DocXToXML {
 
 	/**
 	 * Description: Convert respondus form quiz docx to xml
+	 * Example of a XML document
+	* 	<question type="multichoice|truefalse|shortanswer|matching|cloze|essay|numerical|description">
+			<name>
+				<text>Name of question</text>
+			</name>
+			<questiontext format="html">
+				<text>What is the answer to this question?</text>
+			</questiontext>
+			.
+			.
+			.
+		</question>
+	 * Example of multichoice 
+	 	<question type="multichoice">
+		<answer fraction="100">
+			<text>The correct answer</text>
+			<feedback><text>Correct!</text></feedback>
+		</answer>
+		<answer fraction="0">
+			<text>A distractor</text>
+			<feedback><text>Ooops!</text></feedback>
+		</answer>
+		<answer fraction="0">
+			<text>Another distractor</text>
+			<feedback><text>Ooops!</text></feedback>
+		</answer>
+		<shuffleanswers>1</shuffleanswers>
+		<single>true</single>
+		<answernumbering>abc</answernumbering>
+		</question>
 	 * 
 	 * @param path location of file
 	 * @return return XML
@@ -344,6 +362,8 @@ public class DocXToXML {
 	public static void convert_XML(String path) {
 
 		System.out.println("Initalize XML conversion..");
+
+		//https://stackoverflow.com/questions/23520208/how-to-create-xml-file-with-specific-structure-in-java
 
 		try {
 			DocumentBuilderFactory dbFactory =
@@ -355,72 +375,67 @@ public class DocXToXML {
 			Element rootElement = doc.createElement("quiz");
 			doc.appendChild(rootElement);
    
-			// supercars element
-			Element supercar = doc.createElement("supercars");
-			rootElement.appendChild(supercar);
-   
-			// setting attribute to element
-			Attr attr = doc.createAttribute("company");
-			attr.setValue("Ferrari");
-			supercar.setAttributeNode(attr);
-   
-			// carname element
-			Element carname = doc.createElement("carname");
-			Attr attrType = doc.createAttribute("type");
-			attrType.setValue("formula one");
-			carname.setAttributeNode(attrType);
-			carname.appendChild(doc.createTextNode("Ferrari 101"));
-			supercar.appendChild(carname);
-   
-			Element carname1 = doc.createElement("carname");
-			Attr attrType1 = doc.createAttribute("type");
-			attrType1.setValue("sports");
-			carname1.setAttributeNode(attrType1);
-			carname1.appendChild(doc.createTextNode("Ferrari 202"));
-			supercar.appendChild(carname1);
-   
-			// write the content into xml file
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File("C:\\cars.xml"));
-			transformer.transform(source, result);
-			
-			// Output to console for testing
-			StreamResult consoleResult = new StreamResult(System.out);
-			transformer.transform(source, consoleResult);
-		 } catch (Exception e) {
-			e.printStackTrace();
-		 }
-
-		//int debugCounter = 0;
-
-		try {
+			//process the elements in the xml
 			File file = new File(path);
 			FileInputStream fis = new FileInputStream(file);
 			XWPFDocument document = new XWPFDocument(OPCPackage.open(fis));
-
-			// Find and replace in paragraph
 			List<XWPFParagraph> paragraphList = document.getParagraphs();
+			int i = 0;
+
+			//Start XML 
 
 			for (XWPFParagraph paragraph : paragraphList) {
 				List<XWPFRun> runs = paragraph.getRuns();
 
 				if (runs != null) {
-
 					for (XWPFRun r : runs) {
-
-						// System.out.println(debugCounter++ + ". "+ r.toString());
+						// question element
+						Element question = doc.createElement("question");
+						rootElement.appendChild(question);
+			
+						// setting attribute to element
+						Attr attr = doc.createAttribute("type");
+						attr.setValue("multichoice");
+						question.setAttributeNode(attr);
 
 						String tempString = r.toString();
+
 						if (isInteger(tempString)) {
+							i++;
+							Element name = doc.createElement("name");
+							Element text = doc.createElement("text");
+							text.appendChild(doc.createTextNode(tempString.toString()));
+							name.appendChild(text);
+							question.appendChild(name);
+
+							Element questiontext = doc.createElement("questiontext");
+							Attr attrType = doc.createAttribute("format");
+							attrType.setValue("html");
+							Element text1 = doc.createElement("text");
+							text1.appendChild(doc.createTextNode(tempString.toString()));
+							questiontext.appendChild(text1);
+							question.appendChild(questiontext);
+
 
 						} else if (isFeedback(tempString)) {
+							//not adding feedback right now
 
 						} else if (isAnswer(tempString)) {
-
+							Element answer = doc.createElement("answer");
+							Attr attrAns = doc.createAttribute("fraction");
+							attrAns.setValue("100");
+							Element anstext = doc.createElement("text");
+							anstext.appendChild(doc.createTextNode(tempString.toString()));
+							answer.appendChild(anstext);
+							question.appendChild(answer);
 						} else if (isIncorrect(tempString)) {
-
+							Element incorrect = doc.createElement("incorrect");
+							Attr attrAns = doc.createAttribute("fraction");
+							attrAns.setValue("0");
+							Element inctext = doc.createElement("text");
+							inctext.appendChild(doc.createTextNode(tempString.toString()));
+							incorrect.appendChild(inctext);
+							question.appendChild(incorrect);
 						}
 					}
 				}
@@ -429,6 +444,19 @@ public class DocXToXML {
 			// close FileInputSTream, XWPFDocument
 			fis.close();
 			document.close();
+
+			// write the content into xml file
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File("C:\\Users\\CatherineKhongsaly\\Documents\\Test Docs\\Week 1\\quiz.xml"));
+			transformer.transform(source, result);
+			
+			// Output to console for testing
+			StreamResult consoleResult = new StreamResult(System.out);
+			transformer.transform(source, consoleResult);
+
+			System.out.println("File converted");
 		}
 
 		catch (Exception ex) {
@@ -436,7 +464,5 @@ public class DocXToXML {
 		}
 
 	}// end of convert_XML
-
-	
 
 }// end of DocXToXML
